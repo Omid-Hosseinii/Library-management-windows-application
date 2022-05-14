@@ -5,6 +5,13 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter.messagebox import showinfo
 import tkinter as tk
+import pyglet
+from DatabaseLayer.dbManager import *
+from DatabaseLayer.BookModel import *
+#-------------------------------------------------------------
+###defined custom font
+pyglet.font.add_file('font/IRANYekanBlack.ttf')
+pyglet.font.add_file('font/IRANYekanBold.ttf')
 #________________________________________________________________________________________
 
 
@@ -18,11 +25,12 @@ class Library_Gui:
         y=(hs/2)-(h/2)
         master.geometry("%dx%d+%d+%d" %(w,h,x,y))
 
+
     def __init__(self):
         self.root=Tk()
         self.open_form_size(self.root,825,550)
         self.root.title('نرم افزار کتابداری')   
-        self.root.iconbitmap('UI//images//ico//libraryicon.ico')
+        self.root.iconbitmap('UI//images//ico//libraryicon2.ico')
         self.root.resizable(0,0)
 
         bg = PhotoImage(file = "UI//images//png//library.png")
@@ -30,18 +38,172 @@ class Library_Gui:
         canvas1.pack(fill = "both", expand = True)
         canvas1.create_image(0,0,image=bg,anchor="nw")
 
-        self.welcomeLabel=Label(self.root,text='به نرم افزار مدیریت کتابخانه خوش آمدید',bg='#E97611',fg='white',font=('tahoma',17))
-        self.welcomeLabel.place(x=232,y=45)  
 
-        self.btn1=Button(self.root,text='ثبت کتاب جدید',relief=RAISED)
-        self.btn1.place(x=150,y=300)   
+
+        self.welcomeLabel=Label(self.root,text='به نرم افزار مدیریت کتابخانه خوش آمدید',bg='#E97611',fg='white',font=('IRANYekanBlack',17))
+        self.welcomeLabel.place(x=232,y=45)  
+        self.welcomeLabel=Label(self.root,text='لطفا عملیات خود را انتخاب کنید',bg='#E97611',fg='white',font=('IRANYekanBlack',20))
+        self.welcomeLabel.place(x=240,y=77)  
+
+        self.btn1=Button(self.root,text='ثبت کتاب',relief=RAISED,font=('IRANYekanBlack',17),width=8,bg='#A67143',fg='white')
+        self.btn1.place(x=130,y=270)   
         self.btn1.bind('<Button>',lambda event : self.addBook(event))
+
+        self.btn2=Button(self.root,text='حذف کتاب',relief=RAISED,font=('IRANYekanBlack',17),width=8,bg='#A67143',fg='white')
+        self.btn2.place(x=280,y=270)   
+        self.btn2.bind('<Button>',lambda event : self.deleteBook(event))
+
+        self.btn3=Button(self.root,text='جستجوی کتاب',relief=RAISED,font=('IRANYekanBlack',17),width=8,bg='#A67143',fg='white')
+        self.btn3.place(x=430,y=270)   
+        self.btn3.bind('<Button>',lambda event : self.searchBook(event))
+
+        self.btn4=Button(self.root,text='نمایش کتابها',relief=RAISED,font=('IRANYekanBlack',17),width=8,bg='#A67143',fg='white')
+        self.btn4.place(x=600,y=270)   
+        self.btn4.bind('<Button>',lambda event : self.searchBooks(event))
+
 
         self.root.mainloop()  
 
 
     #------------------------------------------------------------------------------------------
     def addBook(self,event):
-        pass       
+        win=Toplevel(self.root)
+        win.title('درج کتاب')
+        win.iconbitmap('UI//images//ico//addLibrary.ico')      
+        self.open_form_size(win,300,230)
+        win.resizable(0,0)
+
+        # bg = PhotoImage(file = "UI//images//png//addbookback2.png")
+        # canvas1 = Canvas( win, width = 300,height = 220)
+        # canvas1.grid()
+        # canvas1.create_image(0,0,image=bg,anchor="nw")
+        # background_image=PhotoImage(file = "UI//images//png//addbookback2.png")
+        # background_label = Label(win, image=background_image)
+        # background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+        win.configure(background='#79090b')
+
+
+
+
+        guideid=Label(win,text='شماره راهنما :',font=('IRANYekanBold',15),bg='#79090b',fg='white')
+        guideid.grid(row=0,column=0,pady=4)
+        guideidEntry=Entry(master=win)
+        guideidEntry.grid(row=0,column=1)
+
+        title=Label(win,text='عنوان :',width=14,font=('IRANYekanBold',15),bg='#79090b',fg='white')
+        title.grid(row=1,column=0,pady=4)
+        titleEntry=Entry(master=win)
+        titleEntry.grid(row=1,column=1)
+
+        creator=Label(win,text='پدیدآور :',width=14,font=('IRANYekanBold',15),bg='#79090b',fg='white')
+        creator.grid(row=2,column=0,pady=4)
+        creatorEntry=Entry(master=win)
+        creatorEntry.grid(row=2,column=1)
+
+        publicationdetail=Label(win,text='مشخصات نشر :',width=14,font=('IRANYekanBold',15),bg='#79090b',fg='white')
+        publicationdetail.grid(row=3,column=0,pady=4)
+        publicationdetailEntry=Entry(master=win)
+        publicationdetailEntry.grid(row=3,column=1)
+
+        btnadd=Button(win,text='درج در دیتابیس')
+        btnadd.grid(row=5,column=1,pady=12,padx=5)
+        btnadd.bind('<Button>',lambda event : self.insertDb(event,guideidEntry.get(),titleEntry.get(),creatorEntry.get(),publicationdetailEntry.get()))
+
+        btnclear=Button(win,text='پاک کردن',width=12)
+        btnclear.grid(row=5,column=0,pady=12,padx=5)
+        btnclear.bind('<Button>',lambda event : self.reset_values(event,guideidEntry,titleEntry,creatorEntry,publicationdetailEntry))
+
+        win.mainloop()     
+
+
+    def deleteBook(self,event):
+        win=Toplevel(self.root)
+        win.title('حذف کتاب')
+        self.open_form_size(win,650,200)
+        win.iconbitmap('UI//images//ico//deletelibrary.ico')      
+        win.resizable(0,0)
+
+        f1=Frame(win,height=150)
+        f1.pack(side=TOP,fill=BOTH)
+        f2=Frame(win,height=150)
+        f2.pack(side=BOTTOM,fill=BOTH)
+
+        deletee=Label(f1,text='شماره آیدی کتاب',font=('tahoma',12))
+        deletee.grid(row=0,column=0,padx=20,pady=40)
+        deleteeEntry=Entry(master=f1)
+        deleteeEntry.grid(row=0,column=1,padx=20,pady=40)   
+
+
+        btndelete=Button(f1,text='حذف')
+        btndelete.grid(row=0,column=3,padx=20,pady=40)
+        btndelete.bind('<Button>',lambda event : self.deleteDB(event,deleteeEntry.get()))
+
+        #------------------------------------------------------
+
+        first=Label(f2,text='از آیدی',font=('tahoma',12))
+        first.grid(row=0,column=0,padx=20,pady=40)
+        firstEntry=Entry(master=f2)
+        firstEntry.grid(row=0,column=1,padx=20,pady=40)
+
+        end=Label(f2,text='تا آیدی',font=('tahoma',12))
+        end.grid(row=0,column=2,padx=20,pady=40)        
+        endEntry=Entry(master=f2)
+        endEntry.grid(row=0,column=3,padx=20,pady=40)
+
+
+        btndelete2=Button(f2,text='حذف')
+        btndelete2.grid(row=0,column=4,padx=20,pady=40)
+        btndelete2.bind('<Button>',lambda event : self.deleteDBperiod(event,firstEntry.get(),endEntry.get()))        
+
+        win.mainloop()
+
+
+
+    def searchBook(self,event):
+        pass
+
+
+    def searchBooks(self,event):
+        pass
+
+
+
 
 #____________________________________________________________________________________________
+
+    def reset_values(self,event,guideid,title,creator,publicationdetail):
+        guideid.delete(0, 'end')
+        title.delete(0, 'end')
+        creator.delete(0, 'end')
+        publicationdetail.delete(0, 'end')
+
+
+    def insertDb(self,event,guideid,title,creator,publicationdetail):
+        book=Book(guideid,title,creator,publicationdetail)
+        try:
+            db=Database()
+            db.insertBook(book)
+            messagebox.showinfo('درج','درج با موفیقت انجام شد')
+        except:
+            messagebox.showerror('خطا','درج با موفیقت انجام نشد')
+
+
+
+
+    def deleteDB(self,event,id):
+        try:
+            db=Database()
+            db.deleteBook(id)
+            messagebox.showinfo('حذف','حذف با موفقیت انحام شد')
+        except:
+            messagebox.showerror('خطا','مشکلی در حذف کردن پیش آمده است') 
+        
+
+    def deleteDBperiod(self,event,firstid,endid):
+        try:
+            db=Database()
+            db.deleteBooks(firstid,endid)
+            messagebox.showinfo('حذف','حذف با موفقیت انحام شد')
+        except:
+            messagebox.showerror('خطا','مشکلی در حذف کردن پیش آمده است') 

@@ -1,6 +1,7 @@
 import sys
-sys.path.insert(0, 'C:\Users\Omid\Desktop\library app')
+sys.path.insert(0, 'C:/Users/Omid/Desktop/library app')
 from DatabaseLayer.dbConnection import *
+from DatabaseLayer.BookModel import *
 
 class Database:
     def __init__(self):
@@ -9,9 +10,9 @@ class Database:
     #------------------------------------------------------------------------------
     def insertBook(self,book):
         try:
-            val=book.guideid,book.title,book.creator,book.publicationdetail
-            query="Insert INTO book(guideid,title,creator,publicationdetail) Values(%s,%s,%s,%s,%s)"
-            self.crusor.execute(query,val)
+            val=book.guideid,book.title,book.creator,book.publicationdetails
+            query="Insert INTO book(guideid,title,creator,publicationdetail) Values(%s,%s,%s,%s)"
+            self.cursor.execute(query,val)
             self.db.commit()
             return True
         except:
@@ -21,16 +22,16 @@ class Database:
     def deleteBook(self,record):
         try:
             
-            query=f"DELETE FROM book WHERE id IN ({record})"
-            self.crusor.execute(query)
+            query=f"DELETE FROM book WHERE record IN ({record})"
+            self.cursor.execute(query)
             self.db.commit()
         except:
             print("unexeption error..!") 
     #------------------------------------------------------------------------------
     def deleteBooks(self,firstId,endId):
         try:
-            query=f"DELETE FROM book WHERE id BETWEEN {firstId} and {endId}"
-            self.crusor.execute(query)
+            query=f"DELETE FROM book WHERE record BETWEEN {firstId} and {endId}"
+            self.cursor.execute(query)
             self.db.commit()
         except:
             print("unexeption error..!")         
@@ -45,5 +46,10 @@ class Database:
             return list1
         except:
             print('Error') 
+
+
+# book1=Book('asdas','asdas','asda','asdas')
+# db=Database()
+# db.insertBook(book1)
 
 
