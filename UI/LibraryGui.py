@@ -8,6 +8,7 @@ import tkinter as tk
 import pyglet
 from DatabaseLayer.dbManager import *
 from DatabaseLayer.BookModel import *
+from ProcessLayer.WeatherApi import *
 #-------------------------------------------------------------
 ###defined custom font
 pyglet.font.add_file('font/IRANYekanBlack.ttf')
@@ -30,37 +31,48 @@ class Library_Gui:
         self.root=Tk()
         self.open_form_size(self.root,825,550)
         self.root.title('نرم افزار کتابداری')   
-        self.root.iconbitmap('UI//images//ico//libraryicon2.ico')
+        self.root.iconbitmap('UI//images//ico//libraryicon.ico')
         self.root.resizable(0,0)
 
-        bg = PhotoImage(file = "UI//images//png//library.png")
+
+        tempTime=get_temperatureTime()
+
+
+
+        bg = PhotoImage(file = "UI//images//png//library2.png")
         canvas1 = Canvas( self.root, width = 825,height = 550)
         canvas1.pack(fill = "both", expand = True)
         canvas1.create_image(0,0,image=bg,anchor="nw")
 
 
-
-        self.welcomeLabel=Label(self.root,text='به نرم افزار مدیریت کتابخانه خوش آمدید',bg='#E97611',fg='white',font=('IRANYekanBlack',17))
-        self.welcomeLabel.place(x=232,y=45)  
-        self.welcomeLabel=Label(self.root,text='لطفا عملیات خود را انتخاب کنید',bg='#E97611',fg='white',font=('IRANYekanBlack',20))
-        self.welcomeLabel.place(x=240,y=77)  
-
-        self.btn1=Button(self.root,text='ثبت کتاب',relief=RAISED,font=('IRANYekanBlack',17),width=8,bg='#A67143',fg='white')
+        imgbtn1 = PhotoImage(file = "UI//images//png//btn1.png")
+        self.btn1=Button(self.root,image=imgbtn1,relief=SOLID)
         self.btn1.place(x=130,y=270)   
         self.btn1.bind('<Button>',lambda event : self.addBook(event))
 
-        self.btn2=Button(self.root,text='حذف کتاب',relief=RAISED,font=('IRANYekanBlack',17),width=8,bg='#A67143',fg='white')
+
+        imgbtn2 = PhotoImage(file = "UI//images//png//btn2.png")
+        self.btn2=Button(self.root,image=imgbtn2,text='حذف کتاب',relief=RAISED)
         self.btn2.place(x=280,y=270)   
         self.btn2.bind('<Button>',lambda event : self.deleteBook(event))
 
-        self.btn3=Button(self.root,text='جستجوی کتاب',relief=RAISED,font=('IRANYekanBlack',17),width=8,bg='#A67143',fg='white')
+
+        imgbtn3 = PhotoImage(file = "UI//images//png//btn3.png")
+        self.btn3=Button(self.root,image=imgbtn3,text='جستجوی کتاب',relief=RAISED)
         self.btn3.place(x=430,y=270)   
         self.btn3.bind('<Button>',lambda event : self.searchBook(event))
 
-        self.btn4=Button(self.root,text='نمایش کتابها',relief=RAISED,font=('IRANYekanBlack',17),width=8,bg='#A67143',fg='white')
+
+        imgbtn4 = PhotoImage(file = "UI//images//png//btn4.png")
+        self.btn4=Button(self.root,image=imgbtn4,text='نمایش کتابها',relief=RAISED)
         self.btn4.place(x=600,y=270)   
         self.btn4.bind('<Button>',lambda event : self.searchBooks(event))
 
+        l1=Label(self.root,text=tempTime['time'],font=('tahoma',15),bg='#2d2927',fg='white')
+        l1.place(x=610,y=514)
+
+        l1=Label(self.root,text=tempTime['temp'],font=('tahoma',15),bg='#2d2927',fg='white')
+        l1.place(x=73,y=514)
 
         self.root.mainloop()  
 
@@ -81,7 +93,7 @@ class Library_Gui:
         # background_label = Label(win, image=background_image)
         # background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        win.configure(background='#79090b')
+        win.configure(background='#528340')
 
 
 
@@ -166,7 +178,7 @@ class Library_Gui:
         self.open_form_size(win,800,300)
         win.iconbitmap('UI//images//ico//deletelibrary.ico')      
         win.resizable(0,0)
-        win.configure(background='#47B0DD')
+        win.configure(background='#528340')
 
         searchLabel=Label(win,text='لطفا شماره رکورد کتاب را در باکس زیر وارد کنید',font=('IRANYekanBold',20),bg='#47B0DD')
         searchLabel.grid(row=0,column=0,padx=165,pady=40)
@@ -212,7 +224,7 @@ class Library_Gui:
         self.open_form_size(win,800,450)
         win.iconbitmap('UI//images//ico//deletelibrary.ico')      
         win.resizable(0,0)
-        win.configure(background='#47B0DD')
+        win.configure(background='#528340')
 
         # searchLabel=Label(win,text='لطفا شماره رکورد کتاب را در باکس زیر وارد کنید',font=('IRANYekanBold',20),bg='#47B0DD')
         # searchLabel.grid(row=0,column=0,padx=165,pady=40)

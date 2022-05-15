@@ -20,7 +20,7 @@ def get_location():
     return location_data["city"]
 
 
-def get_temperature():
+def get_temperatureTime():
 
     city=get_location()       
     geolocator=Nominatim(user_agent="geoapiExercises")       
@@ -47,7 +47,7 @@ def get_temperature():
     info={'temp':temp,'time':current_time}
     return info
 
-print(get_temperature())    
+   
 
 
 
