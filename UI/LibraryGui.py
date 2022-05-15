@@ -159,16 +159,94 @@ class Library_Gui:
         win.mainloop()
 
 
-
+    #------------------------------------------------------------------------------------------------
     def searchBook(self,event):
-        pass
+        win=Toplevel(self.root)
+        win.title('جستوجوی کتاب')
+        self.open_form_size(win,800,300)
+        win.iconbitmap('UI//images//ico//deletelibrary.ico')      
+        win.resizable(0,0)
+        win.configure(background='#47B0DD')
 
+        searchLabel=Label(win,text='لطفا شماره رکورد کتاب را در باکس زیر وارد کنید',font=('IRANYekanBold',20),bg='#47B0DD')
+        searchLabel.grid(row=0,column=0,padx=165,pady=40)
 
+        searchImg=PhotoImage(file="UI//images//png//search.png")
+        Label(win,image=searchImg,bg='#47B0DD').place(x=155,y=95)
+        entrySearch=Entry(win,width=17,bd=0,font=("poppins",25,"bold"),bg="#1c323c",fg="white",justify="center")
+        entrySearch.place(x=200,y=115)
+        entrySearch.focus()
+        SearchPhoto=PhotoImage(file="UI//images//png//search_icon.png")
+        searchButton=Button(win,image=SearchPhoto,borderwidth=0,relief=SOLID,cursor="hand2",bg="#1c323c")
+        searchButton.bind('<Button>',lambda event : searchOneBook(event,entrySearch.get()))
+        searchButton.place(x=533,y=107)
+
+        tree=ttk.Treeview(win , column=("record","guideid","title","creator","publicationdetail"),show='headings',height=1)
+        tree.grid(row=3,columnspan=1,pady=95)
+
+        tree.column("# 1", anchor=CENTER,width=80)
+        tree.heading("# 1",text='رکورد')
+        tree.column("# 2", anchor=CENTER,width=150)
+        tree.heading("# 2",text='شماره راهنما')
+        tree.column("# 3", anchor=CENTER,width=180)
+        tree.heading("# 3",text='عنوان')
+        tree.column("# 4", anchor=CENTER,width=210)
+        tree.heading("# 4",text='پدیدآور')
+        tree.column("# 5", anchor=CENTER,width=100)
+        tree.heading("# 5",text='مشخصات نشر')                
+
+        def searchOneBook(event,record):
+            try:
+                db=Database()
+                listbook=db.getBook(record)
+                tree.insert('','end',text='1',values=(listbook[0][0],listbook[0][1],listbook[0][2],listbook[0][3],listbook[0][4]))       
+            except:
+                messagebox.showerror('خطا','رکوردی یافت نشد') 
+
+        win.mainloop()
+
+    #----------------------------------------------------------------------------------------------------
     def searchBooks(self,event):
-        pass
+        win=Toplevel(self.root)
+        win.title('جستوجوی کتاب')
+        self.open_form_size(win,800,450)
+        win.iconbitmap('UI//images//ico//deletelibrary.ico')      
+        win.resizable(0,0)
+        win.configure(background='#47B0DD')
+
+        # searchLabel=Label(win,text='لطفا شماره رکورد کتاب را در باکس زیر وارد کنید',font=('IRANYekanBold',20),bg='#47B0DD')
+        # searchLabel.grid(row=0,column=0,padx=165,pady=40)
 
 
+        tree2=ttk.Treeview(win , column=("record","guideid","title","creator","publicationdetail"),show='headings',height=10)
+        tree2.grid(row=0,column=0,columnspan=1)
 
+        tree2.column("# 1", anchor=CENTER,width=80)
+        tree2.heading("# 1",text='رکورد')
+        tree2.column("# 2", anchor=CENTER,width=150)
+        tree2.heading("# 2",text='شماره راهنما')
+        tree2.column("# 3", anchor=CENTER,width=180)
+        tree2.heading("# 3",text='عنوان')
+        tree2.column("# 4", anchor=CENTER,width=210)
+        tree2.heading("# 4",text='پدیدآور')
+        tree2.column("# 5", anchor=CENTER,width=100)
+        tree2.heading("# 5",text='مشخصات نشر')     
+
+        db=Database()
+        books=db.getBooks()
+
+        i=1
+        for book in books:
+            tree2.insert('','end',text=str(i),values=(book[0],book[1],book[2],book[3],book[4]))
+            i+=1     
+
+        scrollbar = ttk.Scrollbar(win, orient=tk.VERTICAL, command=tree2.yview)
+        tree2.configure(yscroll=scrollbar.set)
+        scrollbar.grid(row=0, column=1, sticky='ns')
+
+        tree2.columnconfigure(0, weight=1)                          
+
+        win.mainloop()
 
 #____________________________________________________________________________________________
 
@@ -178,7 +256,6 @@ class Library_Gui:
         creator.delete(0, 'end')
         publicationdetail.delete(0, 'end')
 
-
     def insertDb(self,event,guideid,title,creator,publicationdetail):
         book=Book(guideid,title,creator,publicationdetail)
         try:
@@ -187,8 +264,6 @@ class Library_Gui:
             messagebox.showinfo('درج','درج با موفیقت انجام شد')
         except:
             messagebox.showerror('خطا','درج با موفیقت انجام نشد')
-
-
 
 
     def deleteDB(self,event,id):
@@ -206,4 +281,4 @@ class Library_Gui:
             db.deleteBooks(firstid,endid)
             messagebox.showinfo('حذف','حذف با موفقیت انحام شد')
         except:
-            messagebox.showerror('خطا','مشکلی در حذف کردن پیش آمده است') 
+            messagebox.showerror('خطا','مشکلی در حذف کردن پیش آمده است')            

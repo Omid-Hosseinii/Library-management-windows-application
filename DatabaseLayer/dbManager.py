@@ -39,17 +39,31 @@ class Database:
     def updateBook(self):
         pass
     #------------------------------------------------------------------------------    
+    def getBook(self,record):
+        try:
+            self.cursor.execute(f"Select record,guideid,title,creator,publicationdetail from book where record={record}")
+            list1=self.cursor.fetchall()
+            return list1
+        except:
+            print('Error') 
+
     def getBooks(self):
         try:
-            self.crusor.execute("Select guideid,title,creator,publicationdetail from book")
-            list1=self.crusor.fetchall()
+            self.cursor.execute(f"Select record,guideid,title,creator,publicationdetail from book")
+            list1=self.cursor.fetchall()
             return list1
         except:
             print('Error') 
 
 
-# book1=Book('asdas','asdas','asda','asdas')
+
+# x='''
+# برنامهنویسی کامپیوتر به زبان 
+#  C++ و C
+# '''
+# book1=Book('8ب2س/73/76/Q',x,'محمد عادلینیا','مدرسان شریف - 1')
 # db=Database()
 # db.insertBook(book1)
 
+# print(db.getBook(10))
 
