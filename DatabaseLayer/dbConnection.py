@@ -2,7 +2,7 @@ from mysql.connector import connect,Error
 
 def createDB(databaseName):
     try:
-        with connect (host="localhost",user="root",password="OmId57311") as db:
+        with connect (host="localhost",user="root",password="your password") as db:
             dbcursor=db.cursor()
             dbcursor.execute(f"CREATE DATABASE {databaseName}")
             db.commit()
@@ -34,6 +34,3 @@ def createTable():
         db.commit()
     except Error as error:
         print(error)       
-
-
-     

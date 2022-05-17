@@ -46,10 +46,3 @@ def get_temperatureTime():
 
     info={'temp':temp,'time':current_time}
     return info
-
-   
-
-
-
-
-

@@ -54,16 +54,3 @@ class Database:
             return list1
         except:
             print('Error') 
-
-
-
-# x='''
-# برنامهنویسی کامپیوتر به زبان 
-#  C++ و C
-# '''
-# book1=Book('8ب2س/73/76/Q',x,'محمد عادلینیا','مدرسان شریف - 1')
-# db=Database()
-# db.insertBook(book1)
-
-# print(db.getBook(10))
-
