@@ -12,7 +12,7 @@ def createDB(databaseName):
 
 def dbConnection():
     try:
-        return connect(host="localhost",user="root",password="OmId57311",database='library')        
+        return connect(host="localhost",user="root",password="",database='library')        
     except Error as error:
         print(error)  
 
